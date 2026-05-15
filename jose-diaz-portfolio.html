@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jose Diaz — Software Architect & .NET Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c0f;
+    --bg2: #0d1318;
+    --panel: #111820;
+    --border: #1e2d3d;
+    --accent: #00e5a0;
+    --accent2: #0098ff;
+    --accent3: #ff5f5f;
+    --text: #c8d8e8;
+    --text-dim: #5a7a94;
+    --text-bright: #eef4fa;
+    --mono: 'Space Mono', monospace;
+    --display: 'Syne', sans-serif;
+    --body: 'DM Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(8,12,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  .nav-logo span { color: var(--text-dim); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(0,229,160,0.06) 0%, transparent 70%);
+    right: -100px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .hero-left { position: relative; z-index: 2; }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid rgba(0,229,160,0.3);
+    border-radius: 2px;
+    background: rgba(0,229,160,0.04);
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  .hero-name {
+    font-family: var(--display);
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+    color: var(--text-bright);
+    margin-bottom: 1.2rem;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero-name em {
+    font-style: normal;
+    color: var(--accent);
+    display: block;
+  }
+
+  .hero-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    font-weight: 300;
+    max-width: 420px;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.6s 0.2s ease both;
+    line-height: 1.7;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.6rem;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover {
+    background: #00fbb5;
+    transform: translateY(-2px);
+    box-shadow: 0 0 24px rgba(0,229,160,0.35);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.6rem;
+    background: transparent;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+    transform: translateY(-2px);
+  }
+
+  /* ── TERMINAL CARD ── */
+  .hero-right {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    animation: fadeLeft 0.8s 0.2s ease both;
+  }
+
+  .terminal {
+    width: 100%;
+    max-width: 500px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(0,229,160,0.06), 0 32px 64px rgba(0,0,0,0.5);
+  }
+
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.75rem 1rem;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f5f; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .terminal-title {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    margin-left: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .terminal-body {
+    padding: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    line-height: 2;
+  }
+
+  .t-prompt { color: var(--text-dim); }
+  .t-cmd { color: var(--accent2); }
+  .t-key { color: var(--accent3); }
+  .t-val { color: var(--accent); }
+  .t-str { color: #e6c87a; }
+  .t-comment { color: var(--text-dim); font-style: italic; }
+  .t-cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--accent);
+    vertical-align: middle;
+    animation: blink 1s infinite;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat-item {
+    padding: 2rem 1.5rem;
+    border-right: 1px solid var(--border);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-item:hover { background: rgba(0,229,160,0.03); }
+
+  .stat-num {
+    font-family: var(--display);
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--text-bright);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .stat-num span { color: var(--accent); }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 5rem 3rem; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 800;
+    color: var(--text-bright);
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* ── EXPERIENCE ── */
+  #experience { background: var(--bg2); }
+
+  .exp-list { display: flex; flex-direction: column; gap: 1.5px; }
+
+  .exp-item {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: border-color 0.3s;
+    cursor: pointer;
+  }
+  .exp-item:hover { border-color: rgba(0,229,160,0.3); }
+  .exp-item.open { border-color: rgba(0,229,160,0.5); }
+
+  .exp-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.4rem 1.8rem;
+  }
+
+  .exp-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 2px solid var(--text-dim);
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+  .exp-item.open .exp-dot,
+  .exp-item:hover .exp-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  .exp-info { }
+
+  .exp-company {
+    font-family: var(--display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+
+  .exp-role {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent2);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  .exp-period {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .exp-toggle {
+    font-size: 1.2rem;
+    color: var(--text-dim);
+    transition: transform 0.3s, color 0.3s;
+    margin-left: 1rem;
+    flex-shrink: 0;
+  }
+  .exp-item.open .exp-toggle { transform: rotate(45deg); color: var(--accent); }
+
+  .exp-body {
+    display: none;
+    padding: 0 1.8rem 1.8rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.4rem;
+  }
+  .exp-item.open .exp-body { display: block; }
+
+  .exp-desc {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin-bottom: 1.2rem;
+    line-height: 1.7;
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .project-card {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem 1.2rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .project-card:hover {
+    border-color: rgba(0,229,160,0.2);
+    transform: translateY(-2px);
+  }
+
+  .project-name {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+    font-weight: 700;
+  }
+
+  .project-desc {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 0.7rem;
+  }
+
+  .tech-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .pill {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    background: rgba(0,152,255,0.1);
+    border: 1px solid rgba(0,152,255,0.2);
+    color: var(--accent2);
+    letter-spacing: 0.04em;
+  }
+
+  .pill.green {
+    background: rgba(0,229,160,0.08);
+    border-color: rgba(0,229,160,0.2);
+    color: var(--accent);
+  }
+
+  /* ── SKILLS ── */
+  #skills { background: var(--bg); }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .skill-group {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    transition: border-color 0.3s;
+  }
+  .skill-group:hover { border-color: rgba(0,229,160,0.25); }
+
+  .skill-group-title {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .skill-group-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .skill-bars { display: flex; flex-direction: column; gap: 0.8rem; }
+
+  .skill-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .skill-name {
+    font-size: 0.82rem;
+    color: var(--text);
+    min-width: 120px;
+  }
+
+  .skill-track {
+    flex: 1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: visible;
+    position: relative;
+  }
+
+  .skill-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    position: relative;
+    animation: fillBar 1.2s ease both;
+    transform-origin: left;
+  }
+
+  .skill-fill::after {
+    content: '';
+    position: absolute;
+    right: -3px;
+    top: -3px;
+    width: 9px; height: 9px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--accent);
+  }
+
+  .skill-pct {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    min-width: 2.5rem;
+    text-align: right;
+  }
+
+  /* ── CONTACT ── */
+  #contact {
+    background: var(--bg2);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-glow {
+    position: absolute;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0,229,160,0.07) 0%, transparent 70%);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .contact-inner { position: relative; z-index: 2; max-width: 600px; margin: 0 auto; }
+
+  .contact-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .contact-headline {
+    font-family: var(--display);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    color: var(--text-bright);
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+  }
+
+  .contact-sub {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    line-height: 1.7;
+  }
+
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.4rem;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    transition: all 0.2s;
+  }
+  .contact-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 0 16px rgba(0,229,160,0.15);
+  }
+  .contact-link svg { width: 14px; height: 14px; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 1.5rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-text {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  .footer-accent { color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeLeft {
+    from { opacity: 0; transform: translateX(32px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  @keyframes fillBar {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero { grid-template-columns: 1fr; padding: 6rem 1.5rem 3rem; }
+    .hero-right { display: none; }
+    section { padding: 3rem 1.5rem; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    .exp-header { grid-template-columns: auto 1fr; }
+    .exp-period { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>//</span> jose_diaz.dev</div>
+  <ul class="nav-links">
+    <li><a href="#experience">experience</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-left">
+    <div class="hero-tag">available for hire</div>
+    <h1 class="hero-name">
+      Jose<br>
+      <em>Diaz</em>
+    </h1>
+    <p class="hero-subtitle">
+      Software Architect & .NET Developer con más de 8 años construyendo 
+      microservicios, sistemas distribuidos y arquitecturas cloud en producción.
+    </p>
+    <div class="hero-cta">
+      <a href="mailto:diazjose195@gmail.com" class="btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Contactar
+      </a>
+      <a href="https://github.com/diaz315" target="_blank" class="btn-secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.4.6.1.82-.26.82-.58v-2.03c-3.34.72-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.08-.74.08-.72.08-.72 1.2.08 1.83 1.23 1.83 1.23 1.06 1.82 2.8 1.3 3.48.99.1-.77.41-1.3.74-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.3.47-2.38 1.23-3.22-.12-.3-.53-1.52.12-3.17 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.13 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.65 1.65.24 2.87.12 3.17.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+      <a href="https://www.linkedin.com/in/jose-gregorio-diazlara/" target="_blank" class="btn-secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.91 1.64-1.86 3.37-1.86 3.6 0 4.27 2.37 4.27 5.46v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0z"/></svg>
+        LinkedIn
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="terminal-title">~/jose-diaz$ whoami</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-prompt">❯ </span><span class="t-cmd">cat</span> profile.json</div>
+        <div>&nbsp;</div>
+        <div>{</div>
+        <div>&nbsp;&nbsp;<span class="t-key">"name"</span>: <span class="t-str">"Jose Diaz"</span>,</div>
+        <div>&nbsp;&nbsp;<span class="t-key">"role"</span>: <span class="t-str">"Software Architect"</span>,</div>
+        <div>&nbsp;&nbsp;<span class="t-key">"experience"</span>: <span class="t-val">8</span>,</div>
+        <div>&nbsp;&nbsp;<span class="t-key">"stack"</span>: [</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-str">".NET 6"</span>, <span class="t-str">"C# 10"</span>,</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-str">"Azure"</span>, <span class="t-str">"Microservices"</span></div>
+        <div>&nbsp;&nbsp;],</div>
+        <div>&nbsp;&nbsp;<span class="t-key">"patterns"</span>: [</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-str">"Hexagonal"</span>, <span class="t-str">"SOLID"</span>,</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-str">"Circuit-Breaker"</span>, <span class="t-str">"Retry"</span></div>
+        <div>&nbsp;&nbsp;],</div>
+        <div>&nbsp;&nbsp;<span class="t-key">"available"</span>: <span class="t-val">true</span></div>
+        <div>}</div>
+        <div>&nbsp;</div>
+        <div><span class="t-prompt">❯ </span><span class="t-cursor"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item reveal">
+    <div class="stat-num">8<span>+</span></div>
+    <div class="stat-label">años de experiencia</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">12<span>+</span></div>
+    <div class="stat-label">proyectos entregados</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">3</div>
+    <div class="stat-label">países clientes</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">5<span>+</span></div>
+    <div class="stat-label">tecnologías core</div>
+  </div>
+</div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Experiencia</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="exp-list">
+
+    <!-- BgNovus -->
+    <div class="exp-item open reveal">
+      <div class="exp-header" onclick="toggleExp(this)">
+        <div class="exp-dot"></div>
+        <div class="exp-info">
+          <div class="exp-company">BgNovus Technologies</div>
+          <div class="exp-role">Analyst Programmer — Remote · Panamá</div>
+        </div>
+        <div class="exp-period">Sep 2019 – Presente</div>
+        <div class="exp-toggle">+</div>
+      </div>
+      <div class="exp-body">
+        <p class="exp-desc">Mantenimiento y creación de microservicios en sistemas distribuidos para módulos de compra, venta e inventario integrados con SAP Business One. Gestión ágil con metodologías Scrum.</p>
+        <div class="project-grid">
+          <div class="project-card">
+            <div class="project-name">Weex.Sales</div>
+            <div class="project-desc">Sistema de compras, ventas e inventario bajo arquitectura MVC/MVVM.</div>
+            <div class="tech-pills">
+              <span class="pill">.NET Framework 4</span>
+              <span class="pill">C# 7.3</span>
+              <span class="pill">SQL Server 2017</span>
+              <span class="pill">jQuery</span>
+            </div>
+          </div>
+          <div class="project-card">
+            <div class="project-name">Weex.OrderOnly</div>
+            <div class="project-desc">App UWP para recepción y despacho de vidrios basada en cotizaciones.</div>
+            <div class="tech-pills">
+              <span class="pill">.NET UWP</span>
+              <span class="pill">C# 8</span>
+              <span class="pill">XAML</span>
+            </div>
+          </div>
+          <div class="project-card">
+            <div class="project-name">Integration</div>
+            <div class="project-desc">App para gestión de fallos y reprocessing en transacciones. SOLID + DI.</div>
+            <div class="tech-pills">
+              <span class="pill">.NET Core 3.1</span>
+              <span class="pill">VueJS 2</span>
+              <span class="pill">C# 8</span>
+            </div>
+          </div>
+          <div class="project-card">
+            <div class="project-name">Talent</div>
+            <div class="project-desc">App distribuida para RRHH bajo arquitectura hexagonal con API Gateway (Ocelot), Circuit-Breaker y unit tests.</div>
+            <div class="tech-pills">
+              <span class="pill green">.NET 6</span>
+              <span class="pill green">C# 10</span>
+              <span class="pill green">Blazor Server</span>
+              <span class="pill">MS-Test</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agile Solutions -->
+    <div class="exp-item reveal">
+      <div class="exp-header" onclick="toggleExp(this)">
+        <div class="exp-dot"></div>
+        <div class="exp-info">
+          <div class="exp-company">Agile Solutions</div>
+          <div class="exp-role">Architect Programmer — Contractor · Lima, Perú</div>
+        </div>
+        <div class="exp-period">Mar 2018 – Presente</div>
+        <div class="exp-toggle">+</div>
+      </div>
+      <div class="exp-body">
+        <p class="exp-desc">Desarrollo de microservicios, aplicaciones web y desktop desde cero. Arquitecturas orientadas a Microsoft Azure con CI/CD, balanceo de carga y Front Door. Metodologías Scrum y Kanban.</p>
+        <div class="project-grid">
+          <div class="project-card">
+            <div class="project-name">AppointmentsRefugees</div>
+            <div class="project-desc">Registro de solicitantes de asilo en Perú con entorno Azure completo (AppService, Redis, CI/CD Pipelines).</div>
+            <div class="tech-pills">
+              <span class="pill green">Azure</span>
+              <span class="pill">.NET Framework 4</span>
+              <span class="pill">Redis Cache</span>
+            </div>
+          </div>
+          <div class="project-card">
+            <div class="project-name">QualityMigratory</div>
+            <div class="project-desc">Arquitectura hexagonal orientada a microservicios con Retry y Circuit-Breaker en Azure.</div>
+            <div class="tech-pills">
+              <span class="pill green">.NET 6</span>
+              <span class="pill green">C# 10</span>
+              <span class="pill">VueJS 2</span>
+              <span class="pill">Azure</span>
+            </div>
+          </div>
+          <div class="project-card">
+            <div class="project-name">WhatsappBot</div>
+            <div class="project-desc">Bot para mensajería y gestión de pedidos vía WhatsApp usando Twilio API.</div>
+            <div class="tech-pills">
+              <span class="pill">Python</span>
+              <span class="pill">Flask</span>
+              <span class="pill">Twilio API</span>
+            </div>
+          </div>
+          <div class="project-card">
+            <div class="project-name">Markings</div>
+            <div class="project-desc">App desktop de biometría (AFIS) para control de asistencia con lector de huellas.</div>
+            <div class="tech-pills">
+              <span class="pill">Windows Forms</span>
+              <span class="pill">C#</span>
+              <span class="pill">.NET API</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comptroller -->
+    <div class="exp-item reveal">
+      <div class="exp-header" onclick="toggleExp(this)">
+        <div class="exp-dot"></div>
+        <div class="exp-info">
+          <div class="exp-company">Contraloría de Caracas (CMLDC)</div>
+          <div class="exp-role">Analyst Programmer · Venezuela</div>
+        </div>
+        <div class="exp-period">Oct 2017 – May 2018</div>
+        <div class="exp-toggle">+</div>
+      </div>
+      <div class="exp-body">
+        <p class="exp-desc">Mantenimiento del sistema SIACE de administración pública nacional para gestión de inventarios.</p>
+        <div class="tech-pills" style="margin-top:0.5rem">
+          <span class="pill">PHP 7</span>
+          <span class="pill">PostgreSQL 9.4</span>
+          <span class="pill">jQuery</span>
+          <span class="pill">HTML5</span>
+          <span class="pill">Git</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Stack Técnico</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="skills-grid">
+
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Backend / .NET</div>
+      <div class="skill-bars">
+        <div class="skill-bar-row">
+          <span class="skill-name">C# / .NET 6</span>
+          <div class="skill-track"><div class="skill-fill" style="width:95%"></div></div>
+          <span class="skill-pct">95%</span>
+        </div>
+        <div class="skill-bar-row">
+          <span class="skill-name">Microservicios</span>
+          <div class="skill-track"><div class="skill-fill" style="width:90%"></div></div>
+          <span class="skill-pct">90%</span>
+        </div>
+        <div class="skill-bar-row">
+          <span class="skill-name">Blazor / MVC</span>
+          <div class="skill-track"><div class="skill-fill" style="width:85%"></div></div>
+          <span class="skill-pct">85%</span>
+        </div>
+        <div class="skill-bar-row">
+          <span class="skill-name">SQL Server</span>
+          <div class="skill-track"><div class="skill-fill" style="width:88%"></div></div>
+          <span class="skill-pct">88%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Arquitectura</div>
+      <div class="skill-bars">
+        <div class="skill-bar-row">
+          <span class="skill-name">Hexagonal</span>
+          <div class="skill-track"><div class="skill-fill" style="width:90%"></div></div>
+          <span class="skill-pct">90%</span>
+        </div>
+        <div class="skill-bar-row">
+          <span class="skill-name">SOLID / DI</span>
+          <div class="skill-track"><div class="skill-fill" style="width:92%"></div></div>
+          <span class="skill-pct">92%</span>
+        </div>
+        <div class="skill-bar-row">
+          <span class="skill-name">Circuit-Breaker</span>
+          <div class="skill-track"><div class="skill-fill" style="width:85%"></div></div>
+          <span class="skill-pct">85%</span>
+        </div>
+        <div class="skill-bar-row">
+          <span class="skill-name">API Gateway</span>
+          <div class="skill-track"><div class="skill-fill" style="width:80%"></div></div>
+          <span class="skill-pct">80%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Cloud & DevOps</div>
+      <div class="skill-bars">
+        <div class="skill-bar-row">
+          <span class="skill-name">Microsoft Azure</span>
+          <div class="skill-track"><div class="skill-fill" style="width:82%"></div></div>
+          <span class="skill-pct">82%</span>
+        </div>
+        <div class="skill-bar-row">
+          <span class="skill-name">CI/CD Pipelines</span>
+          <div class="skill-track"><div class="skill-fill" style="width:78%"></div></div>
+          <span class="skill-pct">78%</span>
+        </div>
+        <div class="skill-bar-row">
+          <span class="skill-name">Redis Cache</span>
+          <div class="skill-track"><div class="skill-fill" style="width:75%"></div></div>
+          <span class="skill-pct">75%</span>
+        </div>
+        <div class="skill-bar-row">
+          <span class="skill-name">Git / Bitbucket</span>
+          <div class="skill-track"><div class="skill-fill" style="width:88%"></div></div>
+          <span class="skill-pct">88%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Frontend & Otros</div>
+      <div class="skill-bars">
+        <div class="skill-bar-row">
+          <span class="skill-name">VueJS 2</span>
+          <div class="skill-track"><div class="skill-fill" style="width:78%"></div></div>
+          <span class="skill-pct">78%</span>
+        </div>
+        <div class="skill-bar-row">
+          <span class="skill-name">Python / Flask</span>
+          <div class="skill-track"><div class="skill-fill" style="width:70%"></div></div>
+          <span class="skill-pct">70%</span>
+        </div>
+        <div class="skill-bar-row">
+          <span class="skill-name">Java / Spring</span>
+          <div class="skill-track"><div class="skill-fill" style="width:65%"></div></div>
+          <span class="skill-pct">65%</span>
+        </div>
+        <div class="skill-bar-row">
+          <span class="skill-name">PHP / Laravel</span>
+          <div class="skill-track"><div class="skill-fill" style="width:72%"></div></div>
+          <span class="skill-pct">72%</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-glow"></div>
+  <div class="contact-inner">
+    <div class="contact-eyebrow">// open to opportunities</div>
+    <h2 class="contact-headline">¿Listo para construir<br>algo grande?</h2>
+    <p class="contact-sub">
+      Disponible para proyectos remotos, contratos y posiciones full-time. 
+      Especializado en sistemas distribuidos, arquitecturas cloud y desarrollo .NET de alto rendimiento.
+    </p>
+    <div class="contact-links">
+      <a href="mailto:diazjose195@gmail.com" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        diazjose195@gmail.com
+      </a>
+      <a href="tel:+573124101723" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.26h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.07 6.07l1.01-.94a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        +57 312-410-17-23
+      </a>
+      <a href="https://www.linkedin.com/in/jose-gregorio-diazlara/" target="_blank" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.91 1.64-1.86 3.37-1.86 3.6 0 4.27 2.37 4.27 5.46v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0z"/></svg>
+        LinkedIn
+      </a>
+      <a href="https://github.com/diaz315" target="_blank" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.4.6.1.82-.26.82-.58v-2.03c-3.34.72-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.08-.74.08-.72.08-.72 1.2.08 1.83 1.23 1.83 1.23 1.06 1.82 2.8 1.3 3.48.99.1-.77.41-1.3.74-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.3.47-2.38 1.23-3.22-.12-.3-.53-1.52.12-3.17 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.13 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.65 1.65.24 2.87.12 3.17.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-text">© 2025 <span class="footer-accent">Jose Diaz</span> — Software Architect</span>
+  <span class="footer-text">Built with <span class="footer-accent">❤</span> & precision</span>
+</footer>
+
+<script>
+  function toggleExp(header) {
+    const item = header.closest('.exp-item');
+    item.classList.toggle('open');
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Skill bars animate on scroll
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.skill-fill').forEach(bar => {
+          bar.style.animation = 'none';
+          bar.offsetHeight;
+          bar.style.animation = '';
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.skill-group').forEach(el => barObserver.observe(el));
+</script>
+</body>
+</html>
